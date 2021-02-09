@@ -15,6 +15,7 @@ from knack.log import get_logger
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
+from azure.cli.core.translator import func_validator_wrapper, validator_factory_wrapper
 
 from .vendored_sdks.azure_mgmt_preview_aks.v2020_12_01.models import ManagedClusterPropertiesAutoScalerProfile
 
@@ -25,6 +26,7 @@ from ._consts import ADDONS
 logger = get_logger(__name__)
 
 
+@func_validator_wrapper
 def validate_ssh_key(namespace):
     if hasattr(namespace, 'no_ssh_key') and namespace.no_ssh_key:
         return
@@ -56,6 +58,7 @@ def validate_ssh_key(namespace):
     namespace.ssh_key_value = content
 
 
+@func_validator_wrapper
 def validate_create_parameters(namespace):
     if not namespace.name:
         raise CLIError('--name has no value')
@@ -63,6 +66,7 @@ def validate_create_parameters(namespace):
         raise CLIError('--dns-prefix has no value')
 
 
+@func_validator_wrapper
 def validate_k8s_version(namespace):
     """Validates a string as a possible Kubernetes version. An empty string is also valid, which tells the server
     to use its default version."""
@@ -76,6 +80,7 @@ def validate_k8s_version(namespace):
                            'such as "1.7.12" or "1.8.7"')
 
 
+@func_validator_wrapper
 def validate_linux_host_name(namespace):
     """Validates a string as a legal host name component.
 
@@ -92,6 +97,7 @@ def validate_linux_host_name(namespace):
                        'letters, numbers, or dashes (-).')
 
 
+@func_validator_wrapper
 def validate_nodes_count(namespace):
     """Validate that min_count and max_count is set to 1-100"""
     if namespace.min_count is not None:
@@ -102,6 +108,7 @@ def validate_nodes_count(namespace):
             raise CLIError('--max-count must be in the range [1,100]')
 
 
+@func_validator_wrapper
 def validate_ip_ranges(namespace):
     if not namespace.api_server_authorized_ip_ranges:
         return
@@ -130,6 +137,7 @@ def validate_ip_ranges(namespace):
             raise CLIError("--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs")
 
 
+@func_validator_wrapper
 def validate_nodepool_name(namespace):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
     if namespace.nodepool_name != "":
@@ -139,6 +147,7 @@ def validate_nodepool_name(namespace):
             raise CLIError('--nodepool-name should only contain alphanumeric characters')
 
 
+@func_validator_wrapper
 def validate_vm_set_type(namespace):
     """Validates the vm set type string."""
     if namespace.vm_set_type is not None:
@@ -149,6 +158,7 @@ def validate_vm_set_type(namespace):
             raise CLIError("--vm-set-type can only be VirtualMachineScaleSets or AvailabilitySet")
 
 
+@func_validator_wrapper
 def validate_load_balancer_sku(namespace):
     """Validates the load balancer sku string."""
     if namespace.load_balancer_sku is not None:
@@ -158,6 +168,7 @@ def validate_load_balancer_sku(namespace):
             raise CLIError("--load-balancer-sku can only be standard or basic")
 
 
+@func_validator_wrapper
 def validate_load_balancer_outbound_ips(namespace):
     """validate load balancer profile outbound IP ids"""
     if namespace.load_balancer_outbound_ips is not None:
@@ -166,6 +177,7 @@ def validate_load_balancer_outbound_ips(namespace):
             raise CLIError("--load-balancer-outbound-ips cannot contain whitespace")
 
 
+@func_validator_wrapper
 def validate_load_balancer_outbound_ip_prefixes(namespace):
     """validate load balancer profile outbound IP prefix ids"""
     if namespace.load_balancer_outbound_ip_prefixes is not None:
@@ -174,6 +186,7 @@ def validate_load_balancer_outbound_ip_prefixes(namespace):
             raise CLIError("--load-balancer-outbound-ip-prefixes cannot contain whitespace")
 
 
+@func_validator_wrapper
 def validate_taints(namespace):
     """Validates that provided taint is a valid format"""
 
@@ -189,6 +202,7 @@ def validate_taints(namespace):
                 raise CLIError('Invalid node taint: %s' % taint)
 
 
+@func_validator_wrapper
 def validate_priority(namespace):
     """Validates the node pool priority string."""
     if namespace.priority is not None:
@@ -199,6 +213,7 @@ def validate_priority(namespace):
             raise CLIError("--priority can only be Spot or Regular")
 
 
+@func_validator_wrapper
 def validate_eviction_policy(namespace):
     """Validates the node pool priority string."""
     if namespace.eviction_policy is not None:
@@ -209,6 +224,7 @@ def validate_eviction_policy(namespace):
             raise CLIError("--eviction-policy can only be Delete or Deallocate")
 
 
+@func_validator_wrapper
 def validate_spot_max_price(namespace):
     """Validates the spot node pool max price."""
     if not isnan(namespace.spot_max_price):
@@ -222,21 +238,25 @@ def validate_spot_max_price(namespace):
                 "default price to be up-to on-demand")
 
 
+@func_validator_wrapper
 def validate_acr(namespace):
     if namespace.attach_acr and namespace.detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
 
+@func_validator_wrapper
 def validate_user(namespace):
     if namespace.user.lower() != "clusteruser" and \
             namespace.user.lower() != "clustermonitoringuser":
         raise CLIError("--user can only be clusterUser or clusterMonitoringUser")
 
 
+@func_validator_wrapper
 def validate_vnet_subnet_id(namespace):
     _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")
 
 
+@func_validator_wrapper
 def validate_pod_subnet_id(namespace):
     _validate_subnet_id(namespace.pod_subnet_id, "--pod-subnet-id")
 
@@ -249,6 +269,7 @@ def _validate_subnet_id(subnet_id, name):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
 
+@func_validator_wrapper
 def validate_load_balancer_outbound_ports(namespace):
     """validate load balancer profile outbound allocated ports"""
     if namespace.load_balancer_outbound_ports is not None:
@@ -258,6 +279,7 @@ def validate_load_balancer_outbound_ports(namespace):
             raise CLIError("--load-balancer-allocated-ports must be in the range [0,64000]")
 
 
+@func_validator_wrapper
 def validate_load_balancer_idle_timeout(namespace):
     """validate load balancer profile idle timeout"""
     if namespace.load_balancer_idle_timeout is not None:
@@ -265,6 +287,7 @@ def validate_load_balancer_idle_timeout(namespace):
             raise CLIError("--load-balancer-idle-timeout must be in the range [4,100]")
 
 
+@func_validator_wrapper
 def validate_nodepool_tags(ns):
     """ Extracts multiple space-separated tags in key[=value] format """
     if isinstance(ns.nodepool_tags, list):
@@ -274,6 +297,7 @@ def validate_nodepool_tags(ns):
         ns.nodepool_tags = tags_dict
 
 
+@func_validator_wrapper
 def validate_cluster_autoscaler_profile(namespace):
     """ Validates that cluster autoscaler profile is acceptable by:
         1. Extracting the key[=value] format to map
@@ -303,6 +327,7 @@ def _extract_cluster_autoscaler_params(namespace):
         namespace.cluster_autoscaler_profile = params_dict
 
 
+@func_validator_wrapper
 def validate_nodepool_labels(namespace):
     """Validates that provided node labels is a valid format"""
 
@@ -375,6 +400,7 @@ def validate_label(label):
     return {kv[0]: kv[1]}
 
 
+@func_validator_wrapper
 def validate_max_surge(namespace):
     """validates parameters like max surge are postive integers or percents. less strict than RP"""
     if namespace.max_surge is None:
@@ -390,6 +416,7 @@ def validate_max_surge(namespace):
         raise CLIError("--max-surge should be an int or percentage")
 
 
+@func_validator_wrapper
 def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
@@ -399,6 +426,7 @@ def validate_assign_identity(namespace):
             raise CLIError("--assign-identity is not a valid Azure resource ID.")
 
 
+@func_validator_wrapper
 def validate_addons(namespace):
     if not hasattr(namespace, 'addons'):
         return
@@ -419,6 +447,7 @@ def validate_addons(namespace):
                 f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
 
 
+@func_validator_wrapper
 def validate_pod_identity_pod_labels(namespace):
     if not hasattr(namespace, 'pod_labels'):
         return
@@ -440,6 +469,7 @@ def validate_pod_identity_pod_labels(namespace):
     namespace.pod_labels = after_validation_labels
 
 
+@validator_factory_wrapper
 def validate_pod_identity_resource_name(attr_name, required):
     "Validate custom resource name for pod identity addon."
 
@@ -459,6 +489,7 @@ def validate_pod_identity_resource_name(attr_name, required):
     return validator
 
 
+@func_validator_wrapper
 def validate_pod_identity_resource_namespace(namespace):
     "Validate custom resource name for pod identity addon."
     if not hasattr(namespace, 'namespace'):

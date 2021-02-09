@@ -8,10 +8,8 @@
 import os.path
 import platform
 
-from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     file_type, get_resource_name_completion_list, get_three_state_flag, name_type, tags_type, zones_type, get_enum_type)
-from knack.arguments import CLIArgumentType
 
 from ._completers import (
     get_vm_size_completion_list, get_k8s_versions_completion_list, get_k8s_upgrades_completion_list)
@@ -30,11 +28,13 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, \
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
     CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
+from azure.cli.core.translator import register_arg_type
+from azure.cli.core.translator.completer import FilesCompleter
 
 
 def load_arguments(self, _):
 
-    acr_arg_type = CLIArgumentType(metavar='ACR_NAME_OR_RESOURCE_ID')
+    acr_arg_type = register_arg_type('acr_arg_type', metavar='ACR_NAME_OR_RESOURCE_ID')
 
     # AKS command argument configuration
     with self.argument_context('aks') as c:

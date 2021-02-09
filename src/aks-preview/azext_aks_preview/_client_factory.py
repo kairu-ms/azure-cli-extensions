@@ -6,14 +6,14 @@
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.parameters import get_resources_in_subscription
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core.profiles import CustomResourceType
+from azure.cli.core.translator import register_custom_resource_type, func_client_factory_wrapper
 from azure.mgmt.msi import ManagedServiceIdentityClient
 from knack.util import CLIError
 
-CUSTOM_MGMT_AKS_PREVIEW = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks',
-                                             'ContainerServiceClient')
-CUSTOM_MGMT_AKS = CustomResourceType('azext_aks_preview.vendored_sdks.azure_mgmt_aks',
-                                     'ContainerServiceClient')
+CUSTOM_MGMT_AKS_PREVIEW = register_custom_resource_type(
+    'CUSTOM_MGMT_AKS_PREVIEW', 'azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks', 'ContainerServiceClient')
+CUSTOM_MGMT_AKS = register_custom_resource_type(
+    'CUSTOM_MGMT_AKS', 'azext_aks_preview.vendored_sdks.azure_mgmt_aks', 'ContainerServiceClient')
 
 
 def cf_storage(cli_ctx, subscription_id=None):
@@ -24,6 +24,7 @@ def cf_compute_service(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_COMPUTE)
 
 
+@func_client_factory_wrapper
 def cf_container_services(cli_ctx, *_):
     return get_container_service_client(cli_ctx).container_services
 
@@ -32,10 +33,12 @@ def get_container_service_client(cli_ctx, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW)
 
 
+@func_client_factory_wrapper
 def cf_managed_clusters(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).managed_clusters
 
 
+@func_client_factory_wrapper
 def cf_agent_pools(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).agent_pools
 

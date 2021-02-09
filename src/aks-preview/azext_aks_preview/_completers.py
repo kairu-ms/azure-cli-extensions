@@ -5,12 +5,13 @@
 
 from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 from azure.cli.core.decorators import Completer
+from azure.cli.core.translator import func_completer_wrapper
 
 # pylint: disable=line-too-long
 from azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.v2019_04_01.models import ContainerServiceVMSizeTypes
 
 
-@Completer
+@func_completer_wrapper
 def get_k8s_upgrades_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return Kubernetes versions available for upgrading an existing cluster."""
     resource_group = getattr(namespace, 'resource_group_name', None)
@@ -25,7 +26,7 @@ def get_k8s_upgrades(cli_ctx, resource_group, name):
     return results['control_plane_profile']['upgrades']
 
 
-@Completer
+@func_completer_wrapper
 def get_k8s_versions_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return Kubernetes versions available for provisioning a new cluster."""
     location = _get_location(cmd.cli_ctx, namespace)
@@ -42,7 +43,7 @@ def get_k8s_versions(cli_ctx, location):
     return search('orchestrators[*].orchestrator_version', results)
 
 
-@Completer
+@func_completer_wrapper
 def get_vm_size_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return the intersection of the VM sizes allowed by the ACS SDK with those returned by the Compute Service."""
 

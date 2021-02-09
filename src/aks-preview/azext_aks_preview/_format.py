@@ -8,8 +8,10 @@ from collections import OrderedDict
 from jmespath import compile as compile_jmes, Options
 # pylint: disable=import-error
 from jmespath import functions
+from azure.cli.core.translator import func_transformer_wrapper
 
 
+@func_transformer_wrapper
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]
@@ -31,6 +33,7 @@ def _aks_agentpool_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict))
 
 
+@func_transformer_wrapper
 def aks_agentpool_list_table_format(results):
     """Format an agent pool list for display with "-o table"."""
     return [_aks_agentpool_table_format(r) for r in results]
@@ -41,6 +44,7 @@ def aks_list_table_format(results):
     return [_aks_table_format(r) for r in results]
 
 
+@func_transformer_wrapper
 def aks_show_table_format(result):
     """Format a managed cluster as summary results for display with "-o table"."""
     return [_aks_table_format(result)]
@@ -59,6 +63,7 @@ def _aks_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict))
 
 
+@func_transformer_wrapper
 def aks_upgrades_table_format(result):
     """Format get-upgrades results as a summary for display with "-o table"."""
 
@@ -81,6 +86,7 @@ def aks_upgrades_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
 
+@func_transformer_wrapper
 def aks_versions_table_format(result):
     """Format get-versions results as a summary for display with "-o table"."""
 
@@ -153,6 +159,7 @@ def _custom_functions(preview_versions):
     return CustomFunctions()
 
 
+@func_transformer_wrapper
 def aks_pod_identity_exceptions_table_format(result):
     """Format pod identity exceptions results as a summary for display with "-o table"."""
     preview = {}
@@ -165,6 +172,7 @@ def aks_pod_identity_exceptions_table_format(result):
     return parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
 
 
+@func_transformer_wrapper
 def aks_pod_identities_table_format(result):
     """Format pod identities results as a summary for display with "-o table"."""
     preview = {}
