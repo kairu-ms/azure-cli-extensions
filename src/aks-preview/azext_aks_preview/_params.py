@@ -29,7 +29,7 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
     CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
 from azure.cli.core.translator import register_arg_type
-from azure.cli.core.translator.completer import FilesCompleter
+from azure.cli.core.translator.external_completer import FilesCompleter
 
 
 def load_arguments(self, _):
@@ -226,7 +226,7 @@ def load_arguments(self, _):
                    help='If specified, overwrite the default context name.')
         c.argument('user', options_list=['--user', '-u'], default='clusterUser', validator=validate_user)
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
-                   default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
+                   default=os.path.join('~', '.kube', 'config'))
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')

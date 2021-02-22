@@ -1,5 +1,5 @@
 {
-  "created": "2021-02-22 10:25:50.377497",
+  "created": "2021-02-22 14:01:48.617574",
   "imports": {
     "get_three_state_action": "azure.cli.core.commands.parameters#get_three_state_action",
     "get_three_state_flag": "azure.cli.core.commands.parameters#get_three_state_flag",
@@ -820,7 +820,7 @@
                 "default": "~\\.ssh\\id_rsa.pub",
                 "validator": "@._validators#validate_ssh_key",
                 "completer": {
-                  "factory": "$FilesCompleter",
+                  "factory": "azure.cli.core.translator.external_completer#FilesCompleter",
                   "kwargs": {}
                 },
                 "type": "$file_type"
@@ -1112,9 +1112,9 @@
                   "-f"
                 ],
                 "help": "Kubernetes configuration file to update. Use \"-\" to print YAML to stdout instead.",
-                "default": "C:\\Users\\kairu\\.kube\\config",
+                "default": "~\\.kube\\config",
                 "completer": {
-                  "factory": "$FilesCompleter",
+                  "factory": "azure.cli.core.translator.external_completer#FilesCompleter",
                   "kwargs": {}
                 },
                 "type": "$file_type"
