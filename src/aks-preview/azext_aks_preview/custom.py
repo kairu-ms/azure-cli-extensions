@@ -2496,7 +2496,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       node_taints=None,
                       priority=CONST_SCALE_SET_PRIORITY_REGULAR,
                       eviction_policy=CONST_SPOT_EVICTION_POLICY_DELETE,
-                      spot_max_price=float('nan'),
+                      spot_max_price=None,
                       labels=None,
                       max_surge=None,
                       mode="User",
@@ -2556,7 +2556,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
 
     if priority == CONST_SCALE_SET_PRIORITY_SPOT:
         agent_pool.scale_set_eviction_policy = eviction_policy
-        if isnan(spot_max_price):
+        if spot_max_price is None:
             spot_max_price = -1
         agent_pool.spot_max_price = spot_max_price
 

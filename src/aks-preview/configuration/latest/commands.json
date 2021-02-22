@@ -1,5 +1,5 @@
 {
-  "created": "2021-02-09 15:22:20.210222",
+  "created": "2021-02-22 10:25:50.377497",
   "imports": {
     "get_three_state_action": "azure.cli.core.commands.parameters#get_three_state_action",
     "get_three_state_flag": "azure.cli.core.commands.parameters#get_three_state_flag",
@@ -19,10 +19,18 @@
     "validate_tags": "azure.cli.core.commands.validators#validate_tags"
   },
   "az": {
+    "sdk": {
+      "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+      "client-name": "ContainerServiceClient"
+    },
     "command-groups": {
       "aks": {
         "full-name": "aks",
-        "argument_types": {
+        "sdk": {
+          "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+          "client-name": "ContainerServiceClient"
+        },
+        "argument-types": {
           "acr_arg_type": {},
           "name_type": {
             "options": [
@@ -53,12 +61,12 @@
         "commands": {
           "browse": {
             "full-name": "aks browse",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_browse",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_browse",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "arguments": {
               "disable_browser": {
                 "options": [
@@ -79,7 +87,7 @@
                 "default": "8001"
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -100,12 +108,12 @@
           "create": {
             "full-name": "aks create",
             "help": "Create a new managed Kubernetes cluster.",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_create",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_create",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "aad_admin_group_object_ids": {
@@ -164,7 +172,7 @@
                   "--api-server-authorized-ip-ranges"
                 ],
                 "help": "Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.",
-                "validator": "._validators#validate_ip_ranges",
+                "validator": "@._validators#validate_ip_ranges",
                 "type": "<class 'str'>"
               },
               "appgw_id": {
@@ -219,18 +227,18 @@
                   "--assign-identity"
                 ],
                 "help": "(PREVIEW) Specify an existing user assigned identity to manage cluster resource group.",
-                "validator": "._validators#validate_assign_identity",
+                "validator": "@._validators#validate_assign_identity",
                 "type": "<class 'str'>"
               },
               "attach_acr": {
-                "arg_type": "$acr_arg_type",
+                "arg-type": "$acr_arg_type",
                 "options": [
                   "--attach-acr"
                 ],
                 "help": "Grant the 'acrpull' role assignment to the ACR specified by name or resource ID."
               },
               "auto_upgrade_channel": {
-                "arg_type": {
+                "arg-type": {
                   "factory": "$get_enum_type",
                   "kwargs": {
                     "data": [
@@ -244,14 +252,7 @@
                 "options": [
                   "--auto-upgrade-channel"
                 ],
-                "help": "Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.",
-                "choices": [
-                  "rapid",
-                  "stable",
-                  "patch",
-                  "none"
-                ],
-                "action": "$EnumAction"
+                "help": "Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade."
               },
               "client_secret": {
                 "options": [
@@ -265,7 +266,7 @@
                 ],
                 "help": "Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.",
                 "nargs": "+",
-                "validator": "._validators#validate_cluster_autoscaler_profile"
+                "validator": "@._validators#validate_cluster_autoscaler_profile"
               },
               "disable_rbac": {
                 "options": [
@@ -339,7 +340,7 @@
                     "    gitops                    - enable GitOps (PREVIEW)."
                   ]
                 },
-                "validator": "._validators#validate_addons"
+                "validator": "@._validators#validate_addons"
               },
               "enable_ahub": {
                 "options": [
@@ -368,28 +369,14 @@
                 "action": "store_true"
               },
               "enable_encryption_at_host": {
-                "arg_type": {
+                "arg-type": {
                   "factory": "$get_three_state_flag",
                   "kwargs": {}
                 },
                 "options": [
                   "--enable-encryption-at-host"
                 ],
-                "help": "Enable EncryptionAtHost on agent node pool.",
-                "nargs": "?",
-                "choices": [
-                  "true",
-                  "false"
-                ],
-                "action": {
-                  "factory": "$get_three_state_action",
-                  "kwargs": {
-                    "invert": false,
-                    "negative_label": "false",
-                    "positive_label": "true",
-                    "return_label": false
-                  }
-                }
+                "help": "Enable EncryptionAtHost on agent node pool."
               },
               "enable_managed_identity": {
                 "options": [
@@ -454,7 +441,7 @@
                 ],
                 "help": "Generate SSH public and private key files if missing.",
                 "action": "store_true",
-                "validator": "._validators#validate_create_parameters"
+                "validator": "@._validators#validate_create_parameters"
               },
               "kubelet_config": {
                 "options": [
@@ -474,8 +461,8 @@
                     "az aks get-versions"
                   ]
                 },
-                "validator": "._validators#validate_k8s_version",
-                "completer": "._completers#get_k8s_versions_completion_list"
+                "validator": "@._validators#validate_k8s_version",
+                "completer": "@._completers#get_k8s_versions_completion_list"
               },
               "linux_os_config": {
                 "options": [
@@ -494,7 +481,7 @@
                     "Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100]."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_idle_timeout",
+                "validator": "@._validators#validate_load_balancer_idle_timeout",
                 "type": "<class 'int'>"
               },
               "load_balancer_managed_outbound_ip_count": {
@@ -519,7 +506,7 @@
                     "Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_outbound_ip_prefixes",
+                "validator": "@._validators#validate_load_balancer_outbound_ip_prefixes",
                 "type": "<class 'str'>"
               },
               "load_balancer_outbound_ips": {
@@ -532,7 +519,7 @@
                     "Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_outbound_ips",
+                "validator": "@._validators#validate_load_balancer_outbound_ips",
                 "type": "<class 'str'>"
               },
               "load_balancer_outbound_ports": {
@@ -545,7 +532,7 @@
                     "Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_outbound_ports",
+                "validator": "@._validators#validate_load_balancer_outbound_ports",
                 "type": "<class 'int'>"
               },
               "load_balancer_sku": {
@@ -558,7 +545,7 @@
                     "Select between Basic or Standard Azure Load Balancer SKU for your AKS cluster."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_sku",
+                "validator": "@._validators#validate_load_balancer_sku",
                 "type": "<class 'str'>"
               },
               "location": {
@@ -571,7 +558,7 @@
                   "--max-count"
                 ],
                 "help": "Maximum nodes count used for autoscaler, when \"--enable-cluster-autoscaler\" specified. Please specify the value in the range of [1, 100].",
-                "validator": "._validators#validate_nodes_count",
+                "validator": "@._validators#validate_nodes_count",
                 "type": "<class 'int'>"
               },
               "max_pods": {
@@ -592,14 +579,14 @@
                   "--min-count"
                 ],
                 "help": "Minimun nodes count used for autoscaler, when \"--enable-cluster-autoscaler\" specified. Please specify the value in the range of [1, 100].",
-                "validator": "._validators#validate_nodes_count",
+                "validator": "@._validators#validate_nodes_count",
                 "type": "<class 'int'>"
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
-                "validator": "._validators#validate_linux_host_name",
+                "validator": "@._validators#validate_linux_host_name",
                 "completer": {
                   "factory": "$get_resource_name_completion_list",
                   "kwargs": {
@@ -608,7 +595,7 @@
                 }
               },
               "network_plugin": {
-                "arg_type": {
+                "arg-type": {
                   "factory": "$get_enum_type",
                   "kwargs": {
                     "data": [
@@ -625,12 +612,7 @@
                   "long-summary": [
                     "Specify \"azure\" for advanced networking configurations. Defaults to \"kubenet\"."
                   ]
-                },
-                "choices": [
-                  "azure",
-                  "kubenet"
-                ],
-                "action": "$EnumAction"
+                }
               },
               "network_policy": {
                 "options": [
@@ -698,10 +680,10 @@
                 ],
                 "help": "Size of Virtual Machines to create as Kubernetes nodes.",
                 "default": "Standard_DS2_v2",
-                "completer": "._completers#get_vm_size_completion_list"
+                "completer": "@._completers#get_vm_size_completion_list"
               },
               "node_zones": {
-                "arg_type": "$zones_type",
+                "arg-type": "$zones_type",
                 "options": [
                   "--node-zones",
                   "--zones",
@@ -715,7 +697,7 @@
                 ],
                 "help": "space-separated labels: key[=value] [key[=value] ...]. You can not change the node labels through CLI after creation. See https://aka.ms/node-labels for syntax of labels.",
                 "nargs": "*",
-                "validator": "._validators#validate_nodepool_labels"
+                "validator": "@._validators#validate_nodepool_labels"
               },
               "nodepool_name": {
                 "options": [
@@ -723,7 +705,7 @@
                 ],
                 "help": "Node pool name, upto 12 alphanumeric characters",
                 "default": "nodepool1",
-                "validator": "._validators#validate_nodepool_name",
+                "validator": "@._validators#validate_nodepool_name",
                 "type": "<class 'str'>"
               },
               "nodepool_tags": {
@@ -732,10 +714,10 @@
                 ],
                 "help": "space-separated tags: key[=value] [key[=value] ...]. Use \"\" to clear existing tags.",
                 "nargs": "*",
-                "validator": "._validators#validate_nodepool_tags"
+                "validator": "@._validators#validate_nodepool_tags"
               },
               "outbound_type": {
-                "arg_type": {
+                "arg-type": {
                   "factory": "$get_enum_type",
                   "kwargs": {
                     "data": [
@@ -752,12 +734,7 @@
                   "long-summary": [
                     "Select between loadBalancer and userDefinedRouting. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard."
                   ]
-                },
-                "choices": [
-                  "loadBalancer",
-                  "userDefinedRouting"
-                ],
-                "action": "$EnumAction"
+                }
               },
               "pod_cidr": {
                 "options": [
@@ -775,7 +752,7 @@
                   "--pod-subnet-id"
                 ],
                 "help": "The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)",
-                "validator": "._validators#validate_pod_subnet_id",
+                "validator": "@._validators#validate_pod_subnet_id",
                 "type": "<class 'str'>"
               },
               "ppg": {
@@ -841,7 +818,7 @@
                 ],
                 "help": "Public key path or key contents to install on node VMs for SSH access. For example, 'ssh-rsa AAAAB...snip...UcyupgH azureuser@linuxvm'.",
                 "default": "~\\.ssh\\id_rsa.pub",
-                "validator": "._validators#validate_ssh_key",
+                "validator": "@._validators#validate_ssh_key",
                 "completer": {
                   "factory": "$FilesCompleter",
                   "kwargs": {}
@@ -849,7 +826,7 @@
                 "type": "$file_type"
               },
               "tags": {
-                "arg_type": "$tags_type",
+                "arg-type": "$tags_type",
                 "options": [
                   "--tags"
                 ],
@@ -867,7 +844,7 @@
                   "--vm-set-type"
                 ],
                 "help": "Agent pool vm set type. VirtualMachineScaleSets or AvailabilitySet.",
-                "validator": "._validators#validate_vm_set_type",
+                "validator": "@._validators#validate_vm_set_type",
                 "type": "<class 'str'>"
               },
               "vnet_subnet_id": {
@@ -875,7 +852,7 @@
                   "--vnet-subnet-id"
                 ],
                 "help": "The ID of a subnet in an existing VNet into which to deploy the cluster.",
-                "validator": "._validators#validate_vnet_subnet_id",
+                "validator": "@._validators#validate_vnet_subnet_id",
                 "type": "<class 'str'>"
               },
               "windows_admin_password": {
@@ -932,12 +909,12 @@
           },
           "disable-addons": {
             "full-name": "aks disable-addons",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_disable_addons",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_disable_addons",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "addons": {
@@ -946,10 +923,10 @@
                   "-a"
                 ],
                 "required": true,
-                "validator": "._validators#validate_addons"
+                "validator": "@._validators#validate_addons"
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -984,12 +961,12 @@
                 "    gitops                    - Enable GitOps (PREVIEW)."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_enable_addons",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_enable_addons",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "addons": {
@@ -999,7 +976,7 @@
                 ],
                 "help": "Enable the Kubernetes addons in a comma-separated list.",
                 "required": true,
-                "validator": "._validators#validate_addons"
+                "validator": "@._validators#validate_addons"
               },
               "appgw_id": {
                 "options": [
@@ -1056,7 +1033,7 @@
                 "action": "store_true"
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1090,12 +1067,12 @@
           "get-credentials": {
             "full-name": "aks get-credentials",
             "help": "Get access credentials for a managed Kubernetes cluster.",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_get_credentials",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_get_credentials",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "arguments": {
               "admin": {
                 "options": [
@@ -1112,7 +1089,7 @@
                 "help": "If specified, overwrite the default context name."
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1155,7 +1132,7 @@
                 ],
                 "help": "Get credentials for the user. Only valid when --admin is False.  Default: cluster user credentials.",
                 "default": "clusterUser",
-                "validator": "._validators#validate_user"
+                "validator": "@._validators#validate_user"
               }
             }
           },
@@ -1167,13 +1144,13 @@
                 "Gets the details of the upgrade profile for a managed cluster with a specified resource group and name."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".vendored_sdks.azure_mgmt_preview_aks.operations._managed_clusters_operations#ManagedClustersOperations.get_upgrade_profile",
-            "client-factory": "._client_factory#cf_managed_clusters",
-            "table-transformer": "._format#aks_upgrades_table_format",
+            "operation": "@SDK.operations._managed_clusters_operations#ManagedClustersOperations.get_upgrade_profile",
+            "client-factory": "@._client_factory#cf_managed_clusters",
+            "table-transformer": "@._format#aks_upgrades_table_format",
             "arguments": {
               "resource_group_name": {
                 "options": [
@@ -1183,7 +1160,7 @@
                 "required": true
               },
               "resource_name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1198,13 +1175,13 @@
           "get-versions": {
             "full-name": "aks get-versions",
             "help": "Get the versions available for creating a managed Kubernetes cluster.",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_get_versions",
-            "client-factory": "._client_factory#cf_container_services",
-            "table-transformer": "._format#aks_versions_table_format",
+            "operation": "@.custom#aks_get_versions",
+            "client-factory": "@._client_factory#cf_container_services",
+            "table-transformer": "@._format#aks_versions_table_format",
             "arguments": {
               "location": {
                 "options": [
@@ -1217,15 +1194,15 @@
           "kanalyze": {
             "full-name": "aks kanalyze",
             "help": "Display diagnostic results for the Kubernetes cluster after kollect is done.",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_kanalyze",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_kanalyze",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "arguments": {
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1255,12 +1232,12 @@
                 "  the storagea account in diagnostics settings for your managed cluster."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_kollect",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_kollect",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "arguments": {
               "container_logs": {
                 "options": [
@@ -1289,7 +1266,7 @@
                 }
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1333,17 +1310,17 @@
                 "Kubernetes will be unavailable during cluster certificate rotation."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_rotate_certs",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_rotate_certs",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "confirmation": "Kubernetes will be unavailable during certificate rotation process.\nAre you sure you want to perform this operation?",
             "support-no-wait": true,
             "arguments": {
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1364,16 +1341,16 @@
           "scale": {
             "full-name": "aks scale",
             "help": "Scale the node pool in a managed Kubernetes cluster.",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_scale",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_scale",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1397,7 +1374,7 @@
                   "--nodepool-name"
                 ],
                 "help": "Node pool name, upto 12 alphanumeric characters",
-                "validator": "._validators#validate_nodepool_name",
+                "validator": "@._validators#validate_nodepool_name",
                 "type": "<class 'str'>"
               },
               "resource_group_name": {
@@ -1410,16 +1387,16 @@
           },
           "show": {
             "full-name": "aks show",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "show-operation": ".custom#aks_show",
-            "client-factory": "._client_factory#cf_managed_clusters",
-            "table-transformer": "._format#aks_show_table_format",
+            "show-operation": "@.custom#aks_show",
+            "client-factory": "@._client_factory#cf_managed_clusters",
+            "table-transformer": "@._format#aks_show_table_format",
             "arguments": {
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1445,12 +1422,12 @@
                 "Starts a Stopped Managed Cluster."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".vendored_sdks.azure_mgmt_preview_aks.operations._managed_clusters_operations#ManagedClustersOperations.start",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@SDK.operations._managed_clusters_operations#ManagedClustersOperations.start",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "resource_group_name": {
@@ -1461,7 +1438,7 @@
                 "required": true
               },
               "resource_name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1481,12 +1458,12 @@
                 "Stops a Running Managed Cluster."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".vendored_sdks.azure_mgmt_preview_aks.operations._managed_clusters_operations#ManagedClustersOperations.stop",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@SDK.operations._managed_clusters_operations#ManagedClustersOperations.stop",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "resource_group_name": {
@@ -1497,7 +1474,7 @@
                 "required": true
               },
               "resource_name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1512,12 +1489,12 @@
           "update": {
             "full-name": "aks update",
             "help": "Update a managed Kubernetes cluster properties, such as enable/disable cluster-autoscaler",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_update",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_update",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "aad_admin_group_object_ids": {
@@ -1543,7 +1520,7 @@
                   "--api-server-authorized-ip-ranges"
                 ],
                 "help": "Comma seperated list of authorized apiserver IP ranges. Set to \"\" to allow all traffic on a previously restricted cluster. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.",
-                "validator": "._validators#validate_ip_ranges",
+                "validator": "@._validators#validate_ip_ranges",
                 "type": "<class 'str'>"
               },
               "assign_identity": {
@@ -1551,19 +1528,19 @@
                   "--assign-identity"
                 ],
                 "help": "(PREVIEW) Specify an existing user assigned identity to manage cluster resource group.",
-                "validator": "._validators#validate_assign_identity",
+                "validator": "@._validators#validate_assign_identity",
                 "type": "<class 'str'>"
               },
               "attach_acr": {
-                "arg_type": "$acr_arg_type",
+                "arg-type": "$acr_arg_type",
                 "options": [
                   "--attach-acr"
                 ],
                 "help": "Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.",
-                "validator": "._validators#validate_acr"
+                "validator": "@._validators#validate_acr"
               },
               "auto_upgrade_channel": {
-                "arg_type": {
+                "arg-type": {
                   "factory": "$get_enum_type",
                   "kwargs": {
                     "data": [
@@ -1577,14 +1554,7 @@
                 "options": [
                   "--auto-upgrade-channel"
                 ],
-                "help": "Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.",
-                "choices": [
-                  "rapid",
-                  "stable",
-                  "patch",
-                  "none"
-                ],
-                "action": "$EnumAction"
+                "help": "Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade."
               },
               "cluster_autoscaler_profile": {
                 "options": [
@@ -1592,15 +1562,15 @@
                 ],
                 "help": "Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.",
                 "nargs": "+",
-                "validator": "._validators#validate_cluster_autoscaler_profile"
+                "validator": "@._validators#validate_cluster_autoscaler_profile"
               },
               "detach_acr": {
-                "arg_type": "$acr_arg_type",
+                "arg-type": "$acr_arg_type",
                 "options": [
                   "--detach-acr"
                 ],
                 "help": "Disable the 'acrpull' role assignment to the ACR specified by name or resource ID.",
-                "validator": "._validators#validate_acr"
+                "validator": "@._validators#validate_acr"
               },
               "disable_ahub": {
                 "options": [
@@ -1684,7 +1654,7 @@
                     "Desired idle timeout for load balancer outbound flows, default is 30 minutes. Please specify a value in the range of [4, 100]."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_idle_timeout",
+                "validator": "@._validators#validate_load_balancer_idle_timeout",
                 "type": "<class 'int'>"
               },
               "load_balancer_managed_outbound_ip_count": {
@@ -1709,7 +1679,7 @@
                     "Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_outbound_ip_prefixes",
+                "validator": "@._validators#validate_load_balancer_outbound_ip_prefixes",
                 "type": "<class 'str'>"
               },
               "load_balancer_outbound_ips": {
@@ -1722,7 +1692,7 @@
                     "Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_outbound_ips",
+                "validator": "@._validators#validate_load_balancer_outbound_ips",
                 "type": "<class 'str'>"
               },
               "load_balancer_outbound_ports": {
@@ -1735,7 +1705,7 @@
                     "Desired static number of outbound ports per VM in the load balancer backend pool. By default, set to 0 which uses the default allocation based on the number of VMs. Please specify a value in the range of [0, 64000] that is a multiple of 8."
                   ]
                 },
-                "validator": "._validators#validate_load_balancer_outbound_ports",
+                "validator": "@._validators#validate_load_balancer_outbound_ports",
                 "type": "<class 'int'>"
               },
               "max_count": {
@@ -1743,7 +1713,7 @@
                   "--max-count"
                 ],
                 "help": "Maximum nodes count used for autoscaler, when \"--enable-cluster-autoscaler\" specified. Please specify the value in the range of [1, 100]",
-                "validator": "._validators#validate_nodes_count",
+                "validator": "@._validators#validate_nodes_count",
                 "type": "<class 'int'>"
               },
               "min_count": {
@@ -1751,11 +1721,11 @@
                   "--min-count"
                 ],
                 "help": "Minimun nodes count used for autoscaler, when \"--enable-cluster-autoscaler\" specified. Please specify the value in the range of [1, 100]",
-                "validator": "._validators#validate_nodes_count",
+                "validator": "@._validators#validate_nodes_count",
                 "type": "<class 'int'>"
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1779,7 +1749,7 @@
                 "required": true
               },
               "tags": {
-                "arg_type": "$tags_type",
+                "arg-type": "$tags_type",
                 "options": [
                   "--tags"
                 ],
@@ -1818,12 +1788,12 @@
                 "Kubernetes will be unavailable during cluster upgrades."
               ]
             },
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "operation": ".custom#aks_upgrade",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "operation": "@.custom#aks_upgrade",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "support-no-wait": true,
             "arguments": {
               "control_plane_only": {
@@ -1844,11 +1814,11 @@
                     "az aks get-upgrades"
                   ]
                 },
-                "validator": "._validators#validate_k8s_version",
-                "completer": "._completers#get_k8s_upgrades_completion_list"
+                "validator": "@._validators#validate_k8s_version",
+                "completer": "@._completers#get_k8s_upgrades_completion_list"
               },
               "name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1883,12 +1853,12 @@
           },
           "wait": {
             "full-name": "aks wait",
-            "resource-type": {
-              "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-              "client_name": "ContainerServiceClient"
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
             },
-            "wait-operation": ".vendored_sdks.azure_mgmt_preview_aks.operations._managed_clusters_operations#ManagedClustersOperations.get",
-            "client-factory": "._client_factory#cf_managed_clusters",
+            "wait-operation": "@SDK.operations._managed_clusters_operations#ManagedClustersOperations.get",
+            "client-factory": "@._client_factory#cf_managed_clusters",
             "arguments": {
               "created": {
                 "options": [
@@ -1938,7 +1908,7 @@
                 "required": true
               },
               "resource_name": {
-                "arg_type": "$name_type",
+                "arg-type": "$name_type",
                 "help": "Name of the managed cluster.",
                 "required": true,
                 "completer": {
@@ -1972,16 +1942,20 @@
           "nodepool": {
             "full-name": "aks nodepool",
             "help": "Commands to manage node pools in managed Kubernetes cluster.",
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
+            },
             "commands": {
               "add": {
                 "full-name": "aks nodepool add",
                 "help": "Add a node pool to the managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_add",
-                "client-factory": "._client_factory#cf_agent_pools",
+                "operation": "@.custom#aks_agentpool_add",
+                "client-factory": "@._client_factory#cf_agent_pools",
                 "support-no-wait": true,
                 "arguments": {
                   "aks_custom_headers": {
@@ -2022,7 +1996,7 @@
                     "action": "store_true"
                   },
                   "eviction_policy": {
-                    "arg_type": {
+                    "arg-type": {
                       "factory": "$get_enum_type",
                       "kwargs": {
                         "data": [
@@ -2035,13 +2009,8 @@
                       "--eviction-policy"
                     ],
                     "help": "The eviction policy of the Spot node pool. It can only be set when --priority is Spot.",
-                    "choices": [
-                      "Delete",
-                      "Deallocate"
-                    ],
                     "default": "Delete",
-                    "action": "$EnumAction",
-                    "validator": "._validators#validate_eviction_policy"
+                    "validator": "@._validators#validate_eviction_policy"
                   },
                   "kubelet_config": {
                     "options": [
@@ -2061,7 +2030,7 @@
                         "az aks get-versions"
                       ]
                     },
-                    "validator": "._validators#validate_k8s_version"
+                    "validator": "@._validators#validate_k8s_version"
                   },
                   "labels": {
                     "options": [
@@ -2069,7 +2038,7 @@
                     ],
                     "help": "The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.",
                     "nargs": "*",
-                    "validator": "._validators#validate_nodepool_labels"
+                    "validator": "@._validators#validate_nodepool_labels"
                   },
                   "linux_os_config": {
                     "options": [
@@ -2102,7 +2071,7 @@
                       "--max-surge"
                     ],
                     "help": "Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%",
-                    "validator": "._validators#validate_max_surge",
+                    "validator": "@._validators#validate_max_surge",
                     "type": "<class 'str'>"
                   },
                   "min_count": {
@@ -2112,7 +2081,7 @@
                     "help": "Minimun nodes count used for autoscaler, when \"--enable-cluster-autoscaler\" specified. Please specify the value in the range of [1, 100]"
                   },
                   "mode": {
-                    "arg_type": {
+                    "arg-type": {
                       "factory": "$get_enum_type",
                       "kwargs": {
                         "data": [
@@ -2125,12 +2094,7 @@
                       "--mode"
                     ],
                     "help": "The mode for a node pool which defines a node pool's primary function. If set as \"System\", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.",
-                    "choices": [
-                      "System",
-                      "User"
-                    ],
-                    "default": "User",
-                    "action": "$EnumAction"
+                    "default": "User"
                   },
                   "node_count": {
                     "options": [
@@ -2158,7 +2122,7 @@
                       "--node-taints"
                     ],
                     "help": "The node taints for the node pool. You can't change the node taints through CLI after the node pool is created.",
-                    "validator": "._validators#validate_taints",
+                    "validator": "@._validators#validate_taints",
                     "type": "<class 'str'>"
                   },
                   "node_vm_size": {
@@ -2167,10 +2131,10 @@
                       "-s"
                     ],
                     "help": "Size of Virtual Machines to create as Kubernetes nodes.",
-                    "completer": "._completers#get_vm_size_completion_list"
+                    "completer": "@._completers#get_vm_size_completion_list"
                   },
                   "node_zones": {
-                    "arg_type": "$zones_type",
+                    "arg-type": "$zones_type",
                     "options": [
                       "--node-zones",
                       "--zones",
@@ -2185,7 +2149,7 @@
                     ],
                     "help": "The node pool name.",
                     "required": true,
-                    "validator": "._validators#validate_nodepool_name",
+                    "validator": "@._validators#validate_nodepool_name",
                     "type": "<class 'str'>"
                   },
                   "os_type": {
@@ -2201,7 +2165,7 @@
                       "--pod-subnet-id"
                     ],
                     "help": "The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)",
-                    "validator": "._validators#validate_pod_subnet_id",
+                    "validator": "@._validators#validate_pod_subnet_id",
                     "type": "<class 'str'>"
                   },
                   "ppg": {
@@ -2211,7 +2175,7 @@
                     "help": "The ID of a PPG."
                   },
                   "priority": {
-                    "arg_type": {
+                    "arg-type": {
                       "factory": "$get_enum_type",
                       "kwargs": {
                         "data": [
@@ -2224,13 +2188,8 @@
                       "--priority"
                     ],
                     "help": "The priority of the node pool.",
-                    "choices": [
-                      "Regular",
-                      "Spot"
-                    ],
                     "default": "Regular",
-                    "action": "$EnumAction",
-                    "validator": "._validators#validate_priority"
+                    "validator": "@._validators#validate_priority"
                   },
                   "resource_group_name": {
                     "options": [
@@ -2243,12 +2202,11 @@
                       "--spot-max-price"
                     ],
                     "help": "It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.",
-                    "default": NaN,
-                    "validator": "._validators#validate_spot_max_price",
+                    "validator": "@._validators#validate_spot_max_price",
                     "type": "<class 'float'>"
                   },
                   "tags": {
-                    "arg_type": "$tags_type",
+                    "arg-type": "$tags_type",
                     "options": [
                       "--tags"
                     ]
@@ -2258,7 +2216,7 @@
                       "--vnet-subnet-id"
                     ],
                     "help": "The ID of a subnet in an existing VNet into which to deploy the cluster.",
-                    "validator": "._validators#validate_vnet_subnet_id",
+                    "validator": "@._validators#validate_vnet_subnet_id",
                     "type": "<class 'str'>"
                   }
                 }
@@ -2266,12 +2224,12 @@
               "delete": {
                 "full-name": "aks nodepool delete",
                 "help": "Delete the agent pool in the managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_delete",
-                "client-factory": "._client_factory#cf_agent_pools",
+                "operation": "@.custom#aks_agentpool_delete",
+                "client-factory": "@._client_factory#cf_agent_pools",
                 "support-no-wait": true,
                 "arguments": {
                   "cluster_name": {
@@ -2289,7 +2247,7 @@
                     ],
                     "help": "The node pool name.",
                     "required": true,
-                    "validator": "._validators#validate_nodepool_name",
+                    "validator": "@._validators#validate_nodepool_name",
                     "type": "<class 'str'>"
                   },
                   "resource_group_name": {
@@ -2303,12 +2261,12 @@
               "get-upgrades": {
                 "full-name": "aks nodepool get-upgrades",
                 "help": "Get the available upgrade versions for an agent pool of the managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_get_upgrade_profile",
-                "client-factory": "._client_factory#cf_agent_pools",
+                "operation": "@.custom#aks_agentpool_get_upgrade_profile",
+                "client-factory": "@._client_factory#cf_agent_pools",
                 "arguments": {
                   "cluster_name": {
                     "options": [
@@ -2336,13 +2294,13 @@
               "list": {
                 "full-name": "aks nodepool list",
                 "help": "List node pools in the managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_list",
-                "client-factory": "._client_factory#cf_agent_pools",
-                "table-transformer": "._format#aks_agentpool_list_table_format",
+                "operation": "@.custom#aks_agentpool_list",
+                "client-factory": "@._client_factory#cf_agent_pools",
+                "table-transformer": "@._format#aks_agentpool_list_table_format",
                 "arguments": {
                   "cluster_name": {
                     "options": [
@@ -2363,12 +2321,12 @@
               "scale": {
                 "full-name": "aks nodepool scale",
                 "help": "Scale the node pool in a managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_scale",
-                "client-factory": "._client_factory#cf_agent_pools",
+                "operation": "@.custom#aks_agentpool_scale",
+                "client-factory": "@._client_factory#cf_agent_pools",
                 "support-no-wait": true,
                 "arguments": {
                   "cluster_name": {
@@ -2395,7 +2353,7 @@
                     ],
                     "help": "The node pool name.",
                     "required": true,
-                    "validator": "._validators#validate_nodepool_name",
+                    "validator": "@._validators#validate_nodepool_name",
                     "type": "<class 'str'>"
                   },
                   "resource_group_name": {
@@ -2409,13 +2367,13 @@
               "show": {
                 "full-name": "aks nodepool show",
                 "help": "Show the details for a node pool in the managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "show-operation": ".custom#aks_agentpool_show",
-                "client-factory": "._client_factory#cf_agent_pools",
-                "table-transformer": "._format#aks_agentpool_show_table_format",
+                "show-operation": "@.custom#aks_agentpool_show",
+                "client-factory": "@._client_factory#cf_agent_pools",
+                "table-transformer": "@._format#aks_agentpool_show_table_format",
                 "arguments": {
                   "cluster_name": {
                     "options": [
@@ -2432,7 +2390,7 @@
                     ],
                     "help": "The node pool name.",
                     "required": true,
-                    "validator": "._validators#validate_nodepool_name",
+                    "validator": "@._validators#validate_nodepool_name",
                     "type": "<class 'str'>"
                   },
                   "resource_group_name": {
@@ -2446,12 +2404,12 @@
               "update": {
                 "full-name": "aks nodepool update",
                 "help": "Update a node pool to enable/disable cluster-autoscaler or change min-count or max-count",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_update",
-                "client-factory": "._client_factory#cf_agent_pools",
+                "operation": "@.custom#aks_agentpool_update",
+                "client-factory": "@._client_factory#cf_agent_pools",
                 "support-no-wait": true,
                 "arguments": {
                   "cluster_name": {
@@ -2489,7 +2447,7 @@
                       "--max-surge"
                     ],
                     "help": "Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%",
-                    "validator": "._validators#validate_max_surge",
+                    "validator": "@._validators#validate_max_surge",
                     "type": "<class 'str'>"
                   },
                   "min_count": {
@@ -2499,7 +2457,7 @@
                     "help": "Minimun nodes count used for autoscaler, when \"--enable-cluster-autoscaler\" specified. Please specify the value in the range of [1, 100]"
                   },
                   "mode": {
-                    "arg_type": {
+                    "arg-type": {
                       "factory": "$get_enum_type",
                       "kwargs": {
                         "data": [
@@ -2511,12 +2469,7 @@
                     "options": [
                       "--mode"
                     ],
-                    "help": "The mode for a node pool which defines a node pool's primary function. If set as \"System\", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.",
-                    "choices": [
-                      "System",
-                      "User"
-                    ],
-                    "action": "$EnumAction"
+                    "help": "The mode for a node pool which defines a node pool's primary function. If set as \"System\", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode."
                   },
                   "nodepool_name": {
                     "options": [
@@ -2525,7 +2478,7 @@
                     ],
                     "help": "The node pool name.",
                     "required": true,
-                    "validator": "._validators#validate_nodepool_name",
+                    "validator": "@._validators#validate_nodepool_name",
                     "type": "<class 'str'>"
                   },
                   "resource_group_name": {
@@ -2535,7 +2488,7 @@
                     "required": true
                   },
                   "tags": {
-                    "arg_type": "$tags_type",
+                    "arg-type": "$tags_type",
                     "options": [
                       "--tags"
                     ]
@@ -2553,12 +2506,12 @@
               "upgrade": {
                 "full-name": "aks nodepool upgrade",
                 "help": "Upgrade the node pool in a managed Kubernetes cluster.",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_agentpool_upgrade",
-                "client-factory": "._client_factory#cf_agent_pools",
+                "operation": "@.custom#aks_agentpool_upgrade",
+                "client-factory": "@._client_factory#cf_agent_pools",
                 "support-no-wait": true,
                 "arguments": {
                   "cluster_name": {
@@ -2575,14 +2528,14 @@
                       "-k"
                     ],
                     "help": "Version of Kubernetes to upgrade the node pool to, such as \"1.11.12\".",
-                    "validator": "._validators#validate_k8s_version"
+                    "validator": "@._validators#validate_k8s_version"
                   },
                   "max_surge": {
                     "options": [
                       "--max-surge"
                     ],
                     "help": "Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%",
-                    "validator": "._validators#validate_max_surge",
+                    "validator": "@._validators#validate_max_surge",
                     "type": "<class 'str'>"
                   },
                   "node_image_only": {
@@ -2599,7 +2552,7 @@
                     ],
                     "help": "The node pool name.",
                     "required": true,
-                    "validator": "._validators#validate_nodepool_name",
+                    "validator": "@._validators#validate_nodepool_name",
                     "type": "<class 'str'>"
                   },
                   "resource_group_name": {
@@ -2615,16 +2568,20 @@
           "pod-identity": {
             "full-name": "aks pod-identity",
             "help": "Commands to manage pod identities in managed Kubernetes cluster.",
+            "sdk": {
+              "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+              "client-name": "ContainerServiceClient"
+            },
             "commands": {
               "add": {
                 "full-name": "aks pod-identity add",
                 "help": "Add a pod identity to a managed Kubernetes cluster",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_pod_identity_add",
-                "client-factory": "._client_factory#cf_managed_clusters",
+                "operation": "@.custom#aks_pod_identity_add",
+                "client-factory": "@._client_factory#cf_managed_clusters",
                 "arguments": {
                   "cluster_name": {
                     "options": [
@@ -2641,7 +2598,7 @@
                     ],
                     "help": "The pod identity name. Generate if not specified.",
                     "validator": {
-                      "factory": "._validators#validate_pod_identity_resource_name",
+                      "factory": "@._validators#validate_pod_identity_resource_name",
                       "kwargs": {
                         "attr_name": "identity_name",
                         "required": false
@@ -2676,12 +2633,12 @@
               "delete": {
                 "full-name": "aks pod-identity delete",
                 "help": "Remove a pod identity from a managed Kubernetes cluster",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_pod_identity_delete",
-                "client-factory": "._client_factory#cf_managed_clusters",
+                "operation": "@.custom#aks_pod_identity_delete",
+                "client-factory": "@._client_factory#cf_managed_clusters",
                 "arguments": {
                   "cluster_name": {
                     "options": [
@@ -2699,7 +2656,7 @@
                     "help": "The pod identity name.",
                     "required": true,
                     "validator": {
-                      "factory": "._validators#validate_pod_identity_resource_name",
+                      "factory": "@._validators#validate_pod_identity_resource_name",
                       "kwargs": {
                         "attr_name": "identity_name",
                         "required": true
@@ -2726,13 +2683,13 @@
               "list": {
                 "full-name": "aks pod-identity list",
                 "help": "List pod identities in a managed Kubernetes cluster",
-                "resource-type": {
-                  "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                  "client_name": "ContainerServiceClient"
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
                 },
-                "operation": ".custom#aks_pod_identity_list",
-                "client-factory": "._client_factory#cf_managed_clusters",
-                "table-transformer": "._format#aks_pod_identities_table_format",
+                "operation": "@.custom#aks_pod_identity_list",
+                "client-factory": "@._client_factory#cf_managed_clusters",
+                "table-transformer": "@._format#aks_pod_identities_table_format",
                 "arguments": {
                   "cluster_name": {
                     "options": [
@@ -2755,16 +2712,20 @@
               "exception": {
                 "full-name": "aks pod-identity exception",
                 "help": "Commands to manage pod identity exceptions in managed Kubernetes cluster.",
+                "sdk": {
+                  "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                  "client-name": "ContainerServiceClient"
+                },
                 "commands": {
                   "add": {
                     "full-name": "aks pod-identity exception add",
                     "help": "Add a pod identity exception to a managed Kubernetes cluster",
-                    "resource-type": {
-                      "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                      "client_name": "ContainerServiceClient"
+                    "sdk": {
+                      "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                      "client-name": "ContainerServiceClient"
                     },
-                    "operation": ".custom#aks_pod_identity_exception_add",
-                    "client-factory": "._client_factory#cf_managed_clusters",
+                    "operation": "@.custom#aks_pod_identity_exception_add",
+                    "client-factory": "@._client_factory#cf_managed_clusters",
                     "arguments": {
                       "cluster_name": {
                         "options": [
@@ -2781,7 +2742,7 @@
                         ],
                         "help": "The pod identity exception name. Generate if not specified.",
                         "validator": {
-                          "factory": "._validators#validate_pod_identity_resource_name",
+                          "factory": "@._validators#validate_pod_identity_resource_name",
                           "kwargs": {
                             "attr_name": "exc_name",
                             "required": false
@@ -2795,7 +2756,7 @@
                         ],
                         "help": "The pod identity exception namespace.",
                         "required": true,
-                        "validator": "._validators#validate_pod_identity_resource_namespace",
+                        "validator": "@._validators#validate_pod_identity_resource_namespace",
                         "type": "<class 'str'>"
                       },
                       "pod_labels": {
@@ -2805,7 +2766,7 @@
                         "help": "space-separated labels: key=value [key=value ...].",
                         "nargs": "*",
                         "required": true,
-                        "validator": "._validators#validate_pod_identity_pod_labels"
+                        "validator": "@._validators#validate_pod_identity_pod_labels"
                       },
                       "resource_group_name": {
                         "options": [
@@ -2818,12 +2779,12 @@
                   "delete": {
                     "full-name": "aks pod-identity exception delete",
                     "help": "Remove a pod identity exception from a managed Kubernetes cluster",
-                    "resource-type": {
-                      "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                      "client_name": "ContainerServiceClient"
+                    "sdk": {
+                      "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                      "client-name": "ContainerServiceClient"
                     },
-                    "operation": ".custom#aks_pod_identity_exception_delete",
-                    "client-factory": "._client_factory#cf_managed_clusters",
+                    "operation": "@.custom#aks_pod_identity_exception_delete",
+                    "client-factory": "@._client_factory#cf_managed_clusters",
                     "arguments": {
                       "cluster_name": {
                         "options": [
@@ -2841,7 +2802,7 @@
                         "help": "The pod identity exception name to remove.",
                         "required": true,
                         "validator": {
-                          "factory": "._validators#validate_pod_identity_resource_name",
+                          "factory": "@._validators#validate_pod_identity_resource_name",
                           "kwargs": {
                             "attr_name": "exc_name",
                             "required": true
@@ -2855,7 +2816,7 @@
                         ],
                         "help": "The pod identity exception namespace to remove.",
                         "required": true,
-                        "validator": "._validators#validate_pod_identity_resource_namespace",
+                        "validator": "@._validators#validate_pod_identity_resource_namespace",
                         "type": "<class 'str'>"
                       },
                       "resource_group_name": {
@@ -2869,13 +2830,13 @@
                   "list": {
                     "full-name": "aks pod-identity exception list",
                     "help": "List pod identity exceptions in a managed Kubernetes cluster",
-                    "resource-type": {
-                      "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                      "client_name": "ContainerServiceClient"
+                    "sdk": {
+                      "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                      "client-name": "ContainerServiceClient"
                     },
-                    "operation": ".custom#aks_pod_identity_exception_list",
-                    "client-factory": "._client_factory#cf_managed_clusters",
-                    "table-transformer": "._format#aks_pod_identity_exceptions_table_format",
+                    "operation": "@.custom#aks_pod_identity_exception_list",
+                    "client-factory": "@._client_factory#cf_managed_clusters",
+                    "table-transformer": "@._format#aks_pod_identity_exceptions_table_format",
                     "arguments": {
                       "cluster_name": {
                         "options": [
@@ -2896,12 +2857,12 @@
                   "update": {
                     "full-name": "aks pod-identity exception update",
                     "help": "Update a pod identity exception in a managed Kubernetes cluster",
-                    "resource-type": {
-                      "import_prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
-                      "client_name": "ContainerServiceClient"
+                    "sdk": {
+                      "import-prefix": "azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks",
+                      "client-name": "ContainerServiceClient"
                     },
-                    "operation": ".custom#aks_pod_identity_exception_update",
-                    "client-factory": "._client_factory#cf_managed_clusters",
+                    "operation": "@.custom#aks_pod_identity_exception_update",
+                    "client-factory": "@._client_factory#cf_managed_clusters",
                     "arguments": {
                       "cluster_name": {
                         "options": [
@@ -2919,7 +2880,7 @@
                         "help": "The pod identity exception name to remove.",
                         "required": true,
                         "validator": {
-                          "factory": "._validators#validate_pod_identity_resource_name",
+                          "factory": "@._validators#validate_pod_identity_resource_name",
                           "kwargs": {
                             "attr_name": "exc_name",
                             "required": true
@@ -2933,7 +2894,7 @@
                         ],
                         "help": "The pod identity exception namespace to remove.",
                         "required": true,
-                        "validator": "._validators#validate_pod_identity_resource_namespace",
+                        "validator": "@._validators#validate_pod_identity_resource_namespace",
                         "type": "<class 'str'>"
                       },
                       "pod_labels": {
@@ -2943,7 +2904,7 @@
                         "help": "pod labels in key=value [key=value ...].",
                         "nargs": "*",
                         "required": true,
-                        "validator": "._validators#validate_pod_identity_pod_labels"
+                        "validator": "@._validators#validate_pod_identity_pod_labels"
                       },
                       "resource_group_name": {
                         "options": [
