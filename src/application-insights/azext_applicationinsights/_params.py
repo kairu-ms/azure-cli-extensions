@@ -113,3 +113,9 @@ def load_arguments(self, _):
         with self.argument_context('monitor app-insights component continues-export {}'.format(scope)) as c:
             c.argument('export_id', options_list=['--id'],
                        help='The Continuous Export configuration ID. This is unique within a Application Insights component.')
+
+    with self.argument_context('monitor app-insights web-tests') as c:
+        c.argument('web_test_name', options_list=['--name', '-n'], id_part='name', help='The name of the Application Insights webtest resource.')
+
+    with self.argument_context('monitor app-insights web-tests list') as c:
+        c.argument('application', id_part=None)

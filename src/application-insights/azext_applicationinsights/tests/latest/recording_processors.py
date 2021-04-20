@@ -6,14 +6,8 @@
 from azure_devtools.scenario_tests import RecordingProcessor
 
 
-def _py3_byte_to_str(byte_or_str):
-    import logging
-    logger = logging.getLogger()
-    logger.warning(type(byte_or_str))
-    try:
-        return str(byte_or_str, 'utf-8') if isinstance(byte_or_str, bytes) else byte_or_str
-    except TypeError:  # python 2 doesn't allow decoding through str
-        return str(byte_or_str)
+def byte_to_str(byte_or_str):
+    return str(byte_or_str, 'utf-8') if isinstance(byte_or_str, bytes) else byte_or_str
 
 
 class StorageAccountSASReplacer(RecordingProcessor):
@@ -41,6 +35,7 @@ class StorageAccountSASReplacer(RecordingProcessor):
 
         if self._activated and request.body:
             for sas_token in self._sas_tokens:
-                body_string = _py3_byte_to_str(request.body)
-                request.body = body_string.replace(sas_token, self.SAS_REPLACEMENT)
+                body_string = byte_to_str(request.body)
+                if body_string and isinstance(body_string, str):
+                    request.body = body_string.replace(sas_token, self.SAS_REPLACEMENT)
         return request

@@ -372,3 +372,24 @@ def get_export_configuration(client, application, resource_group_name, export_id
 
 def delete_export_configuration(client, application, resource_group_name, export_id):
     return client.delete(resource_group_name, application, export_id)
+
+
+def get_web_test(client, resource_group_name, web_test_name):
+    return client.get(resource_group_name, web_test_name)
+
+
+def list_web_tests(client, resource_group_name=None, application=None):
+    if application is not None:
+        return client.list_by_component(application, resource_group_name)
+    elif resource_group_name is not None:
+        return client.list_by_resource_group(resource_group_name)
+    else:
+        return client.list()
+
+def delete_web_test(client, resource_group_name, web_test_name):
+    return client.delete(resource_group_name, web_test_name)
+
+def create_web_test(cmd, client, resource_group_name, web_test_name, kind):
+    from .vendored_sdks.mgmt_applicationinsights.models import WebTest
+
+    pass

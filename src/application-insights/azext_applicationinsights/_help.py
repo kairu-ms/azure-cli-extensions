@@ -363,3 +363,41 @@ helps['monitor app-insights component continues-export delete'] = """
             --app 578f0e27-12e9-4631-bc02-50b965da2633 \\
             --id exportid
 """
+
+helps['monitor app-insights web-tests'] = """
+    type: group
+    short-summary: Manage web tests for an Application Insights.
+"""
+
+helps['monitor app-insights web-tests delete'] = """
+    type: command
+    short-summary: Delete a web test for an Application Insights.
+    examples:
+      - name: Delete a web test of a subscription.
+        text: |
+            az monitor app-insights web-tests delete -g rg -n webTestName
+"""
+
+helps['monitor app-insights web-tests list'] = """
+    type: command
+    short-summary: List web tests.
+    examples:
+      - name: List web tests of a subscription.
+        text: |
+            az monitor app-insights web-tests list
+      - name: List web tests of a resource group.
+        text: |
+            az monitor app-insights web-tests list -g rg
+      - name: List web tests for an Application Insights components.
+        text: |
+            az monitor app-insights web-tests list -g rg --app demoApp
+"""
+
+helps['monitor app-insights web-tests show'] = """
+    type: command
+    short-summary: Get a web test for an Application Insights.
+    examples:
+      - name: Get a web test for an Application Insights.
+        text: |
+            az monitor app-insights web-tests show -g rg -n webTestName
+"""
