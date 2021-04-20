@@ -388,8 +388,3 @@ def list_web_tests(client, resource_group_name=None, application=None):
 
 def delete_web_test(client, resource_group_name, web_test_name):
     return client.delete(resource_group_name, web_test_name)
-
-def create_web_test(cmd, client, resource_group_name, web_test_name, kind):
-    from .vendored_sdks.mgmt_applicationinsights.models import WebTest
-
-    pass
