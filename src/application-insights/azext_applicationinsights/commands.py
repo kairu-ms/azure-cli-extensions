@@ -108,7 +108,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_export_configuration')
         g.custom_command('delete', 'delete_export_configuration', confirmation=True)
 
-    with self.command_group('monitor app-insights web-tests', custom_command_type=web_tests_custom_sdk) as g:
+    with self.command_group('monitor app-insights web-tests', is_preview=True, custom_command_type=web_tests_custom_sdk) as g:
         g.custom_command('list', 'list_web_tests')
         g.custom_show_command('show', 'get_web_test')
         g.custom_command('delete', 'delete_web_test')
