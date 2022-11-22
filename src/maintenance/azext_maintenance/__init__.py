@@ -17,15 +17,13 @@ class MaintenanceManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_maintenance.generated._client_factory import cf_maintenance_cl
         maintenance_custom = CliCommandType(
-            operations_tmpl='azext_maintenance.custom#{}',
-            client_factory=cf_maintenance_cl)
+            operations_tmpl='azext_maintenance.custom#{}')
         parent = super(MaintenanceManagementClientCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=maintenance_custom)
 
     def load_command_table(self, args):
-        from azext_maintenance.generated.commands import load_command_table
+        from azext_maintenance.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -38,27 +36,10 @@ class MaintenanceManagementClientCommandsLoader(AzCommandsLoader):
                 args=args
             )
         load_command_table(self, args)
-        try:
-            from azext_maintenance.manual.commands import load_command_table as load_command_table_manual
-            load_command_table_manual(self, args)
-        except ImportError as e:
-            if e.name.endswith('manual.commands'):
-                pass
-            else:
-                raise e
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_maintenance.generated._params import load_arguments
+        from azext_maintenance._params import load_arguments
         load_arguments(self, command)
-        try:
-            from azext_maintenance.manual._params import load_arguments as load_arguments_manual
-            load_arguments_manual(self, command)
-        except ImportError as e:
-            if e.name.endswith('manual._params'):
-                pass
-            else:
-                raise e
-
 
 COMMAND_LOADER_CLS = MaintenanceManagementClientCommandsLoader
