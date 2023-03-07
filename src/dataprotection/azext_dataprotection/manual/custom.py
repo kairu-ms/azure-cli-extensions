@@ -84,22 +84,59 @@ def dataprotection_resource_guard_update(client,
                       parameters=parameters)
 
 
-def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
+def dataprotection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
+
+    from ..aaz.latest.dataprotection.backup_instance import Create as _Create, Validate as _Validate, Update as _Update
+
+    class ValidateAndCreate(_Update):
+
+        def _execute_operations(self):
+            self.pre_operations()
+            yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
+            yield self.BackupInstancesCreateOrUpdate(ctx=self.ctx)()
+            self.post_operations()
+
+        def pre_operations(self):
+            self.ctx.set_var(
+                "instance",
+                backup_instance,
+                schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
+            )
+
+        class BackupInstancesValidateForBackup(_Validate.BackupInstancesValidateForBackup):
+
+            @property
+            def content(self):
+                _content_value, _builder = self.new_content_builder(
+                    self.ctx.args,
+                    value=self.ctx.vars.instance.properties,
+                )
+
+                return {
+                    "backupInstance": self.serialize_content(_content_value)
+                }
+
+            def on_200(self, session):
+                pass
+
+        class BackupInstancesCreateOrUpdate(_Create.BackupInstancesCreateOrUpdate):
+
+            @property
+            def content(self):
+                _content_value, _builder = self.new_content_builder(
+                    self.ctx.args,
+                    value=self.ctx.vars.instance,
+                )
+                return self.serialize_content(_content_value)
+
     backup_instance_name = backup_instance["backup_instance_name"]
-    validate_backup_instance = copy.deepcopy(backup_instance)
-    backup_instance["backup_instance_name"] = None
-
-    validate_for_backup_request = {}
-    validate_for_backup_request['backup_instance'] = validate_backup_instance['properties']
-
-    sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
-                resource_group_name=resource_group_name, parameters=validate_for_backup_request).result()
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       vault_name=vault_name,
-                       resource_group_name=resource_group_name,
-                       backup_instance_name=backup_instance_name,
-                       parameters=backup_instance)
+    # del backup_instance["backup_instance_name"]
+    return ValidateAndCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        "vault_name": vault_name,
+        "resource_group": resource_group_name,
+        "backup_instance_name": backup_instance_name,
+        "no_wait": no_wait,
+    })
 
 
 def dataprotection_backup_instance_validate_for_backup(client, vault_name, resource_group_name, backup_instance,
