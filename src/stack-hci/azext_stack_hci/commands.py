@@ -14,6 +14,7 @@
 def load_command_table(self, _):  # pylint: disable=unused-argument
 
     with self.command_group('stack-hci cluster'):
+
         from azext_stack_hci.custom import ClusterList, ClusterCreate, IdentityAssign, IdentityRemove
         self.command_table['stack-hci cluster list'] = ClusterList(loader=self)
         self.command_table['stack-hci cluster create'] = ClusterCreate(loader=self)
